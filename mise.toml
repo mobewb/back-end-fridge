@@ -23,6 +23,10 @@ run = "docker compose up -d db"
 description = "Applique les migrations"
 run = "uv run alembic upgrade head"
 
+[tasks.create-admin]
+description = "Crée ou promeut un admin : mise run create-admin EMAIL"
+run = "uv run python -m app.cli create-admin"
+
 [tasks.dev]
 description = "Lance l'API en mode rechargement"
 run = "uv run uvicorn app.main:app --reload"

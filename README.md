@@ -20,6 +20,16 @@ Tâches utiles : `mise run test`, `mise run lint`, `prek run --all-files`.
 > La base `fridge_test` n'est créée qu'à la première initialisation du volume Postgres.
 > Sur un volume existant : `docker compose exec db createdb -U fridge fridge_test`.
 
+## Vue admin
+
+Interface web ([SQLAdmin](https://aminalaee.dev/sqladmin/)) sur http://localhost:8000/admin : gestion des utilisateurs (recherche, passage admin, suppression) et des produits (recherche, filtres, édition).
+
+Seuls les comptes avec `is_admin = true` peuvent s'y connecter (l'accès est revalidé à chaque requête). Créer le premier admin :
+
+```sh
+mise run create-admin ton@email.com   # demande le mot de passe ; crée ou promeut le compte
+```
+
 ## Endpoints (`/api/v1`)
 
 | Méthode | Route | Rôle |
