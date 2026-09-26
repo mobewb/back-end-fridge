@@ -44,3 +44,11 @@ mise run create-admin ton@email.com   # demande le mot de passe ; crée ou prome
 | GET | `/health` | Santé de l'API |
 
 Chaque produit expose `days_left` (négatif si périmé) et `expired`. Les produits sont isolés par utilisateur.
+
+## CI
+
+GitHub Actions (`.github/workflows/ci.yml`) sur chaque push `main`/`dev` et chaque PR :
+- **Qualité** : `ruff check`, `ruff format --check` et les hooks prek.
+- **Tests** : PostgreSQL en service, migrations sur base vide, `pytest` avec couverture (échec sous 80 %, seuil dans `pyproject.toml`). Le résumé s'affiche dans la page du run et les rapports `coverage.xml` / `htmlcov/` sont en artefact.
+
+En local : `mise run lint` et `mise run coverage`.
