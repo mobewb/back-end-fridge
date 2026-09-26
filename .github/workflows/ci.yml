@@ -18,8 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Fichier .env pour mise
-        run: cp .env.example .env
+      - name: Fichier .env vide (requis par mise ; les variables viennent du job)
+        run: touch .env
       - uses: jdx/mise-action@v2
       - run: mise run install-deps
       - name: Ruff (lint + format)
@@ -50,8 +50,8 @@ jobs:
       SECRET_KEY: ci-secret-key-at-least-32-characters-long
     steps:
       - uses: actions/checkout@v4
-      - name: Fichier .env pour mise
-        run: cp .env.example .env
+      - name: Fichier .env vide (requis par mise ; les variables viennent du job)
+        run: touch .env
       - uses: jdx/mise-action@v2
       - run: mise run install-deps
       - name: Migrations (vérifie qu'elles s'appliquent sur une base vide)
