@@ -20,6 +20,16 @@ Tâches utiles : `mise run test`, `mise run lint`, `prek run --all-files`.
 > La base `fridge_test` n'est créée qu'à la première initialisation du volume Postgres.
 > Sur un volume existant : `docker compose exec db createdb -U fridge fridge_test`.
 
+## Vue admin
+
+Interface web ([SQLAdmin](https://aminalaee.dev/sqladmin/)) sur http://localhost:8000/admin : gestion des utilisateurs (recherche, passage admin, suppression) et des produits (recherche, filtres, édition).
+
+Seuls les comptes avec `is_admin = true` peuvent s'y connecter (l'accès est revalidé à chaque requête). Créer le premier admin :
+
+```sh
+mise run create-admin ton@email.com   # demande le mot de passe ; crée ou promeut le compte
+```
+
 ## Endpoints (`/api/v1`)
 
 | Méthode | Route | Rôle |
@@ -34,3 +44,11 @@ Tâches utiles : `mise run test`, `mise run lint`, `prek run --all-files`.
 | GET | `/health` | Santé de l'API |
 
 Chaque produit expose `days_left` (négatif si périmé) et `expired`. Les produits sont isolés par utilisateur.
+
+## CI
+
+GitHub Actions (`.github/workflows/ci.yml`) sur chaque push `main`/`dev` et chaque PR :
+- **Qualité** : `ruff check`, `ruff format --check` et les hooks prek.
+- **Tests** : PostgreSQL en service, migrations sur base vide, `pytest` avec couverture (échec sous 80 %, seuil dans `pyproject.toml`). Le résumé s'affiche dans la page du run et les rapports `coverage.xml` / `htmlcov/` sont en artefact.
+
+En local : `mise run lint` et `mise run coverage`.

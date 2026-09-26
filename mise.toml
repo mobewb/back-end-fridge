@@ -6,6 +6,10 @@ prek = "latest"
 [env]
 _.file = ".env"
 
+[tasks.install-deps]
+description = "Installe les dépendances (sans hooks git, utilisé en CI)"
+run = "uv sync"
+
 [tasks.hooks]
 description = "Installe les hooks git via prek"
 run = "prek install"
@@ -23,6 +27,10 @@ run = "docker compose up -d db"
 description = "Applique les migrations"
 run = "uv run alembic upgrade head"
 
+[tasks.create-admin]
+description = "Crée ou promeut un admin : mise run create-admin EMAIL"
+run = "uv run python -m app.cli create-admin"
+
 [tasks.dev]
 description = "Lance l'API en mode rechargement"
 run = "uv run uvicorn app.main:app --reload"
@@ -30,6 +38,10 @@ run = "uv run uvicorn app.main:app --reload"
 [tasks.test]
 description = "Lance les tests"
 run = "uv run pytest"
+
+[tasks.coverage]
+description = "Tests avec rapport de couverture (seuil dans pyproject.toml)"
+run = "uv run pytest --cov"
 
 [tasks.lint]
 description = "Vérifie le code avec ruff"

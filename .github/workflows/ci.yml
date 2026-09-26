@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Qualité du code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fichier .env pour mise
+        run: cp .env.example .env
+      - uses: jdx/mise-action@v2
+      - run: mise run install-deps
+      - name: Ruff (lint + format)
+        run: mise run lint
+      - name: Hooks prek
+        run: prek run --all-files
+
+  test:
+    name: Tests + couverture
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: fridge
+          POSTGRES_PASSWORD: fridge
+          POSTGRES_DB: fridge_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U fridge"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql+asyncpg://fridge:fridge@localhost:5432/fridge_test
+      TEST_DATABASE_URL: postgresql+asyncpg://fridge:fridge@localhost:5432/fridge_test
+      SECRET_KEY: ci-secret-key-at-least-32-characters-long
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fichier .env pour mise
+        run: cp .env.example .env
+      - uses: jdx/mise-action@v2
+      - run: mise run install-deps
+      - name: Migrations (vérifie qu'elles s'appliquent sur une base vide)
+        run: mise run migrate
+      - name: Tests avec couverture
+        run: uv run pytest --cov --cov-report=term-missing --cov-report=xml --cov-report=html
+      - name: Résumé de couverture
+        if: always()
+        run: |
+          {
+            echo "## Couverture"
+            echo '```'
+            uv run coverage report --skip-covered --show-missing || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: |
+            coverage.xml
+            htmlcov/

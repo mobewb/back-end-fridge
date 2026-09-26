@@ -25,7 +25,7 @@ async def engine():
 
 
 @pytest_asyncio.fixture
-async def client(engine) -> AsyncIterator[AsyncClient]:
+async def client(engine, monkeypatch) -> AsyncIterator[AsyncClient]:
     # Chaque test tourne dans une transaction annulée à la fin.
     async with engine.connect() as conn:
         trans = await conn.begin()
@@ -38,6 +38,7 @@ async def client(engine) -> AsyncIterator[AsyncClient]:
                 yield session
 
         app.dependency_overrides[get_db] = override_get_db
+        monkeypatch.setattr("app.admin.SessionLocal", session_maker)
         async with AsyncClient(
             transport=ASGITransport(app=app), base_url="http://test/api/v1"
         ) as c:
