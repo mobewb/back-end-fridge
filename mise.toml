@@ -1,0 +1,36 @@
+[tools]
+python = "3.12"
+uv = "latest"
+prek = "latest"
+
+[env]
+_.file = ".env"
+
+[tasks.hooks]
+description = "Installe les hooks git via prek"
+run = "prek install"
+
+[tasks.install]
+description = "Installe les dépendances et les hooks git"
+run = "uv sync"
+depends_post = ["hooks"]
+
+[tasks.db]
+description = "Démarre PostgreSQL"
+run = "docker compose up -d db"
+
+[tasks.migrate]
+description = "Applique les migrations"
+run = "uv run alembic upgrade head"
+
+[tasks.dev]
+description = "Lance l'API en mode rechargement"
+run = "uv run uvicorn app.main:app --reload"
+
+[tasks.test]
+description = "Lance les tests"
+run = "uv run pytest"
+
+[tasks.lint]
+description = "Vérifie le code avec ruff"
+run = "uv run ruff check . && uv run ruff format --check ."
