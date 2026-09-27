@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import create_async_engine
 
 from app.config import settings
 from app.db import Base
-from app.models import Product, User  # noqa: F401  (enregistre les tables)
+from app.models import Category, Product, User  # noqa: F401  (enregistre les tables)
 
 config = context.config
 if config.config_file_name is not None:

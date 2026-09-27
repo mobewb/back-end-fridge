@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from app.db import Base, get_db
 from app.main import app
+from app.seed import seed_default_categories
 
 TEST_DATABASE_URL = os.getenv(
     "TEST_DATABASE_URL", "postgresql+asyncpg://fridge:fridge@localhost:5432/fridge_test"
@@ -20,6 +21,9 @@ async def engine():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
+    session_maker = async_sessionmaker(engine, expire_on_commit=False)
+    async with session_maker() as session:
+        await seed_default_categories(session)
     yield engine
     await engine.dispose()
 
