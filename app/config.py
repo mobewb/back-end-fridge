@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     secret_key: str = "change-me"
     access_token_expire_minutes: int = 60
     jwt_algorithm: str = "HS256"
+    cors_origins: list[str] = ["http://localhost:5173"]
 
 
 settings = Settings()

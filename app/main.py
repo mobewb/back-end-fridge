@@ -1,6 +1,8 @@
 from fastapi import APIRouter, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.admin import setup_admin
+from app.config import settings
 from app.routers import auth, products
 
 tags_metadata = [
@@ -18,6 +20,12 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc",
     openapi_url="/openapi.json",
+)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_origins,
+    allow_methods=["*"],
+    allow_headers=["Authorization", "Content-Type"],
 )
 setup_admin(app)
 
