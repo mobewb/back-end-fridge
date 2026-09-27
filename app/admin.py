@@ -6,7 +6,7 @@ from starlette.requests import Request
 
 from app.config import settings
 from app.db import SessionLocal, engine
-from app.models import Product, User
+from app.models import Category, Product, User
 from app.security import verify_password
 
 
@@ -67,6 +67,23 @@ class ProductAdmin(ModelView, model=Product):
     form_excluded_columns = [Product.created_at, Product.updated_at]
 
 
+class CategoryAdmin(ModelView, model=Category):
+    name = "Catégorie"
+    name_plural = "Catégories"
+    icon = "fa-solid fa-tags"
+    column_list = [
+        Category.id,
+        Category.user_id,
+        Category.name,
+        Category.emoji,
+        Category.default_expiry_days,
+    ]
+    column_searchable_list = [Category.name]
+    column_sortable_list = [Category.id, Category.name, Category.default_expiry_days]
+    column_default_sort = [(Category.name, False)]
+    form_excluded_columns = [Category.created_at]
+
+
 def setup_admin(app: FastAPI) -> Admin:
     admin = Admin(
         app,
@@ -76,4 +93,5 @@ def setup_admin(app: FastAPI) -> Admin:
     )
     admin.add_view(UserAdmin)
     admin.add_view(ProductAdmin)
+    admin.add_view(CategoryAdmin)
     return admin
