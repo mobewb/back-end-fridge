@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.admin import setup_admin
 from app.config import settings
-from app.routers import auth, categories, household, products
+from app.routers import auth, categories, household, products, shop_items
 
 tags_metadata = [
     {"name": "auth", "description": "Inscription, connexion (JWT) et profil courant"},
@@ -13,6 +13,7 @@ tags_metadata = [
         "description": "Catégories prédéfinies et personnalisées (emoji, péremption par défaut)",
     },
     {"name": "household", "description": "Foyer partagé (création, invitation, départ)"},
+    {"name": "shop-items", "description": "Liste de courses partagée du foyer"},
     {"name": "health", "description": "Vérification de l'état du service"},
 ]
 
@@ -39,6 +40,7 @@ api.include_router(auth.router)
 api.include_router(products.router)
 api.include_router(categories.router)
 api.include_router(household.router)
+api.include_router(shop_items.router)
 app.include_router(api)
 
 
