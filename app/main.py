@@ -12,7 +12,10 @@ tags_metadata = [
         "name": "categories",
         "description": "Catégories prédéfinies et personnalisées (emoji, péremption par défaut)",
     },
-    {"name": "household", "description": "Foyer partagé (création, invitation, départ)"},
+    {
+        "name": "household",
+        "description": "Foyers partagés (plusieurs par utilisateur : création, invitation, départ)",
+    },
     {"name": "shop-items", "description": "Liste de courses partagée du foyer"},
     {"name": "health", "description": "Vérification de l'état du service"},
 ]

@@ -23,10 +23,10 @@ class Household(Base):
 class Membership(Base):
     __tablename__ = "memberships"
 
-    # Clé primaire sur user_id : un utilisateur appartient à au plus un foyer.
+    # Clé primaire composite : un utilisateur peut appartenir à plusieurs foyers.
     user_id: Mapped[int] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"), primary_key=True
     )
     household_id: Mapped[int] = mapped_column(
-        ForeignKey("households.id", ondelete="CASCADE"), index=True
+        ForeignKey("households.id", ondelete="CASCADE"), primary_key=True, index=True
     )
